@@ -77,7 +77,7 @@ OSQPData* PiecewiseJerkProblem::FormulateProblem() {
   data->n = kernel_dim;
   data->m = num_affine_constraint;
   data->P = csc_matrix(kernel_dim, kernel_dim, P_data.size(), CopyData(P_data),
-                       CopyData(P_indices), CopyData(P_indptr));
+                       CopyData(P_indices), CopyData(P_indptr)); // csc_matrix 矩阵构造
   data->q = CopyData(q);
   data->A =
       csc_matrix(num_affine_constraint, kernel_dim, A_data.size(),
@@ -87,8 +87,9 @@ OSQPData* PiecewiseJerkProblem::FormulateProblem() {
   return data;
 }
 
+// 被Task中的Optimizer直接调用，是一个入口函数
 bool PiecewiseJerkProblem::Optimize(const int max_iter) {
-  OSQPData* data = FormulateProblem();
+  OSQPData* data = FormulateProblem(); //构造出二次规划问题的框架
 
   OSQPSettings* settings = SolverDefaultSettings();
   settings->max_iter = max_iter;
@@ -97,7 +98,7 @@ bool PiecewiseJerkProblem::Optimize(const int max_iter) {
   osqp_work = osqp_setup(data, settings);
   // osqp_setup(&osqp_work, data, settings);
 
-  osqp_solve(osqp_work);
+  osqp_solve(osqp_work); //调用osqp库进行求解
 
   auto status = osqp_work->info->status_val;
 

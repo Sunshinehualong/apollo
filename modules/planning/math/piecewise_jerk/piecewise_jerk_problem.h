@@ -118,12 +118,15 @@ class PiecewiseJerkProblem {
 
  protected:
   // naming convention follows osqp solver.
+  // 构造出P矩阵即代价函数
   virtual void CalculateKernel(std::vector<c_float>* P_data,
                                std::vector<c_int>* P_indices,
                                std::vector<c_int>* P_indptr) = 0;
 
+  // 构建一次项q向量
   virtual void CalculateOffset(std::vector<c_float>* q) = 0;
 
+  // 构造A矩阵即约束矩阵以及上下边界
   virtual void CalculateAffineConstraint(std::vector<c_float>* A_data,
                                          std::vector<c_int>* A_indices,
                                          std::vector<c_int>* A_indptr,
